@@ -1,0 +1,100 @@
+import numpy as np
+import Invariant
+import torch
+
+
+def postprocess(option, prediction, answer,Strain_Measure,ism):
+    if option == 1:
+        if ism == 0:
+            F = Strain_Measure[0][0:][0:]
+            C = Invariant.compute_C(F)
+            I = Invariant.invariants_B_and_C(C)
+            S_nn,S_a = Invariant.Piola_2nd_opt1(prediction, C, answer)
+            sig_nn = Invariant.sigma(S_nn,F,I[2])
+            sig_a = Invariant.sigma(S_a,F,I[2])
+            print("------------------------------------------------")
+            print("---------------CAUCHY STRESS TENSOR-------------")
+            print("------------------------------------------------")
+            print("----------------neural networks-----------------")
+            print()
+            print(sig_nn)
+            print("-------------------analytical-------------------")
+            print(sig_a)
+            print()
+        else:
+            C = Strain_Measure[0][0:][0:]
+            #I = Invariant.invariants_B_and_C(C)
+            S_nn, S_a = Invariant.Piola_2nd_opt1(prediction, C, answer)
+        print("------------------------------------------------")
+        print("--------RICHTER COEFFICIENTS FOR S(C^2)---------")
+        print("------------------------------------------------")
+        print("----------------neural networks-----------------")
+        print()
+        print(prediction)
+        print()
+        print("-------------------analytical-------------------")
+        print(answer)
+        print()
+        print("------------------------------------------------")
+        print("------------2ND PIOLA STRESS TENSOR-------------")
+        print("------------------------------------------------")
+        print("----------------neural networks-----------------")
+        print()
+        print(S_nn)
+        print()
+        print("-------------------analytical-------------------")
+        print(S_a)
+        print()
+
+
+    if option == 2:
+        if ism == 0:
+            F = Strain_Measure[0][0:][0:]
+            predic_r = torch.reshape(prediction,(3,3))
+            answer_r = torch.reshape(answer,(3,3))
+            C = Invariant.compute_C(F)
+            I = Invariant.invariants_B_and_C(C)
+            S_nn, S_a = Invariant.Piola_2nd_opt2(predic_r, answer_r, F)
+            sig_nn = Invariant.sigma(S_nn, F, I[2])
+            sig_a = Invariant.sigma(S_a, F, I[2])
+            print("------------------------------------------------")
+            print("------------1st PIOLA STRESS TENSOR ------------")
+            print("------------------------------------------------")
+            print("----------------neural networks-----------------")
+            print()
+            print(prediction)
+            print()
+            print("-------------------analytical-------------------")
+            print(answer)
+            print()
+            print("------------------------------------------------")
+            print("------------2ND PIOLA STRESS TENSOR-------------")
+            print("------------------------------------------------")
+            print("----------------neural networks-----------------")
+            print()
+            print(S_nn)
+            print()
+            print("-------------------analytical-------------------")
+            print(S_a)
+            print()
+            print("------------------------------------------------")
+            print("---------------CAUCHY STRESS TENSOR-------------")
+            print("------------------------------------------------")
+            print("----------------neural networks-----------------")
+            print()
+            print(sig_nn)
+            print("-------------------analytical-------------------")
+            print(sig_a)
+            print()
+
+
+    if option == 3:
+        print("------------------------------------------------")
+        print("-------------STRAIN ENERGY DENSITY--------------")
+        print("------------------------------------------------")
+        print("----------------neural networks-----------------")
+        print()
+        print(prediction)
+        print()
+        print("-------------------analytical-------------------")
+        print(answer)
